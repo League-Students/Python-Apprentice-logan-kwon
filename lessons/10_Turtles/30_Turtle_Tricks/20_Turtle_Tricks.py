@@ -1,4 +1,5 @@
-import turtle                           # Tell Python we want to work 
+import turtle
+tina.Turtle                           # Tell Python we want to work 
 turtle.setup(600, 600, 0, 0)
 tina.pendown()            # Set the size of the window
 tina = turtle.Turtle()                  # Create a turtle named tina
