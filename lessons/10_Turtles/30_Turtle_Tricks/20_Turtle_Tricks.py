@@ -1,10 +1,8 @@
 import turtle                           # Tell Python we want to work with the turtle
 turtle.setup(600, 600, 0, 0)            # Set the size of the window
 tina = turtle.Turtle()                  # Create a turtle named tina
-
-... # Your code here
-    tina.left(36)
-    tina.forward(50)
+tina.left(36)
+tina.forward(50)
 tina.left(36)
 tina.forward(50)
 tina.pencolor("blue")
@@ -14,7 +12,9 @@ tina.pencolor("green")
 tina.left(36)
 tina.forward(50)
 tina.pencolor("purple")
-make_side
+tina.left(36)
+tina.forward(50)
 tina.pencolor("yellow")
-make_side
+tina.left(36)
+tina.forward(50)
 turtle.exitonclick()                    # Close the window when we click on it
