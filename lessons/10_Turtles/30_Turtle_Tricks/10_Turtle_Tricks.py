@@ -14,12 +14,14 @@ import turtle                           # Tell Python we want to work with the t
 turtle.setup(600, 600, 0, 0)            # Set the size of the window
 tina = turtle.Turtle()                  # Create a turtle named tina
 tina.forward(200)
-tina.left()
+tina.left(120)
+tina.forward(200)
+tina.left(120)
 tina.forward(200)
 # Use tina.forward() and tina.left() to draw a triangle
 # Make each side of the triangle a different color with 
 # tina.pencolor()
 
-... # Your code here
+... # Your code heret
 
 turtle.exitonclick()                    # Close the window when we click on it
