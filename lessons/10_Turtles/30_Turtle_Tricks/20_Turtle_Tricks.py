@@ -19,6 +19,7 @@ tina = turtle.Turtle()                  # Create a turtle named tina
 # tina.pencolor()
 
 ... # Your code here
-def make_side:
-    
+def make_side(x=0,y=0):
+    forward(30)
+
 turtle.exitonclick()                    # Close the window when we click on it

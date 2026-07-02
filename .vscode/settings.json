@@ -63,5 +63,6 @@
   "jupyter.kernels.excludePythonEnvironments": [
     "/bin/python3",
     "/usr/bin/python3"
-  ]
+  ],
+  "python.REPL.enableREPLSmartSend": false
 }
