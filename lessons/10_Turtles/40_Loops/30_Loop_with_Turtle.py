@@ -14,3 +14,5 @@ name: Loop With Turtle
 """
 
 ... # Your code here
+for i in range(5)
+    tina.forwar
