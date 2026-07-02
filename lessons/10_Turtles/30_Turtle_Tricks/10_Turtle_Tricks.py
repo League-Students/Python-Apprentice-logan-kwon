@@ -18,6 +18,8 @@ tina.left(120)
 tina.forward(200)
 tina.left(120)
 tina.forward(200)
+tina.penup()
+tina.forward(200)
 # Use tina.forward() and tina.left() to draw a triangle
 # Make each side of the triangle a different color with 
 # tina.pencolor()
