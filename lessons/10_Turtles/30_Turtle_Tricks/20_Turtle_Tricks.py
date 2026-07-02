@@ -20,6 +20,8 @@ tina = turtle.Turtle()                  # Create a turtle named tina
 
 ... # Your code here
 def make_side(x=0,y=0):
-    forward(30)
-
+    tina.left(36)
+    tina.forward(50)
+make_side
+tina.pencolor("blue")
 turtle.exitonclick()                    # Close the window when we click on it
