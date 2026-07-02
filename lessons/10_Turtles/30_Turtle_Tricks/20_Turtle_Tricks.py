@@ -24,4 +24,11 @@ def make_side(x=0,y=0):
     tina.forward(50)
 make_side
 tina.pencolor("blue")
+make_side
+tina.pencolor("green")
+make_side
+tina.pencolor("purple")
+make_side
+tina.pencolor("yellow")
+make_side
 turtle.exitonclick()                    # Close the window when we click on it
