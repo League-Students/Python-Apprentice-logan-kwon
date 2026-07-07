@@ -17,8 +17,8 @@ t.pendown()
 # then right 60 degrees, then forward 100 pixels. Make any shape you like.
 
 def make_a_shape(t, i):    
-    t.forward(2*i)
-    t.left(70)
+    t.forward(i)
+    t.left(80)
     t.forward(i)
     t.right(80)
     
