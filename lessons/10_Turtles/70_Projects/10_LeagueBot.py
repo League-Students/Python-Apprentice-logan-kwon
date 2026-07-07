@@ -10,7 +10,7 @@ Write your own turtle program! Here is what your program should do
 """
 
 import turtle
-
+turtle.(10)
 def set_turtle_image(turtle, image_name):
     """Set the turtle's shape to a custom image."""
 
