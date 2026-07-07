@@ -17,9 +17,9 @@ t.pendown()
 # then right 60 degrees, then forward 100 pixels. Make any shape you like.
 
 def make_a_shape(t, i):    
-    t.forward(30)
+    t.forward(3*i)
     t.left(60)
-    t.forward(10)
+    t.forward(i)
     t.right(20)
     
 # 2) Call make_a_shape() in a loop to make the turtle draw a spiral.
@@ -30,7 +30,7 @@ def make_a_shape(t, i):
 num_shapes = 30
 
 for i in range(100):
-    make_a_shape(t)
+    make_a_shape(t, i)
     t.right(360/num_shapes)
 
 turtle.exitonclick()
