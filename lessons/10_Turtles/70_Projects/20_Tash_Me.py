@@ -51,3 +51,5 @@ screen.setup(width=600, height=600)
 t = turtle.Turtle()
 
 set_turtle_image(t, 'moustache1.gif')
+
+t.exitonclick()
