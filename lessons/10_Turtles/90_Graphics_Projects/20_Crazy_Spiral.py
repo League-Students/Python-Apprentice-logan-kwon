@@ -24,7 +24,7 @@ def make_a_shape(t):
 # The second ... in the for loop should be the number of shapes you want to make,
 # for example 100, or a list of numbers.
 
-num_shapes = ...
+num_shapes = 30
 
 for i in range(10,8):
     make_a_shape(t)
