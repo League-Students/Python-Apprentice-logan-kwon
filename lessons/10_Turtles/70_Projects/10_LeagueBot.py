@@ -10,7 +10,6 @@ Write your own turtle program! Here is what your program should do
 """
 
 import turtle
-turtle.shape(10)
 def set_turtle_image(turtle, image_name):
     """Set the turtle's shape to a custom image."""
 
@@ -31,7 +30,8 @@ t = turtle.Turtle()
 
 set_turtle_image(t, "leaguebot_bolt.gif")
 
-t.penup()   # Prevent drawing when moving
+t.penup() 
+  # Prevent drawing when moving
 t.speed(0)  # Set a moderate speed
 
 # Move the turtle to each corner of the screen in a square pattern
