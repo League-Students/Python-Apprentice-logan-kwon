@@ -19,6 +19,9 @@ t.pendown()
 def make_a_shape(t):    
     t.forward(30)
     t.left(60)
+    t.forward(10)
+    t.right(20)
+    t.forward(2000)
 # 2) Call make_a_shape() in a loop to make the turtle draw a spiral.
 # For instance, you can call make_a_shape() 100 times to make a spiral with 100 shapes.
 # The second ... in the for loop should be the number of shapes you want to make,
