@@ -52,4 +52,4 @@ t = turtle.Turtle()
 
 set_turtle_image(t, 'moustache1.gif')
 
-t.exitonclick()
+turtle.exitonclick()
