@@ -38,6 +38,26 @@ screen.setup(width=600, height=600)
 # Create a turtle and set its shape to the custom GIF
 t = turtle.Turtle()
 
-set_turtle_image(t, 'moustache1.gif')
+set_turtle_image(t, 'moustache1.gif')   # Make the turtle really big
 
-turtle.exitonclick()
+def turtle_clicked(t, x, y):
+    """Function that gets called when the user clicks on the turtle
+
+    This function will make the turtle tilt 20 degrees 18 times, making a full
+    circle. It is called by the turtle when the user clicks on it.
+
+    Args:
+        t (Turtle): The turtle object that was clicked
+        x (int): The x coordinate of the click
+        y (int): The y coordinate of the click
+    """
+
+    print('turtle clicked!')
+    
+    for i in range(0,360, 20):  # Full circle, 20 degrees at a time
+        t.tilt(20)              # Tilt the turtle 20 degrees
+
+# Connect the turtle to the turtle_clicked function
+t.onclick(lambda x, y, t=t: turtle_clicked(t, x, y))
+
+turtle.done()
