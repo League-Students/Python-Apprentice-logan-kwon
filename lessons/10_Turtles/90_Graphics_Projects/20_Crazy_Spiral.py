@@ -16,7 +16,7 @@ t.pendown()
 # For instance, you can make it go left 30 degrees, then forward 50 pixels, 
 # then right 60 degrees, then forward 100 pixels. Make any shape you like.
 
-def make_a_shape(t):    
+def make_a_shape(t, i):    
     t.forward(30)
     t.left(60)
     t.forward(10)
