@@ -37,6 +37,16 @@ def set_turtle_image(turtle, image_name):
     screen.addshape(image_path)                     # Register the image as a shape
     turtle.shape(image_path)                        # Set the turtle's shape to the image
 
+# Set up the screen
+screen = turtle.Screen()
+screen.setup(width=600, height=600)
+
+# Create a turtle and set its shape to the custom GIF
+t = turtle.Turtle()
+
+set_turtle_image(t, 'moustache2.gif')
+
+   # Set the background image of the screen
 import turtle                                           # Import the turtle module
 
 screen = turtle.Screen()                                    # Set up the screen
