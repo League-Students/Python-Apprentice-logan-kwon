@@ -29,10 +29,10 @@ screen.setup(width=600, height=600)
 # Create a turtle and set its shape to the custom GIF
 t = turtle.Turtle()
 
-set_turtle_image(t, 'leaguebot_bot.gif')
+set_turtle_image(t, "leaguebot_bolt.gif")
 
 t.penup()   # Prevent drawing when moving
-t.speed(3)  # Set a moderate speed
+t.speed(0)  # Set a moderate speed
 
 # Move the turtle to each corner of the screen in a square pattern
 for x, y in [(200, 200), (200, -200), (-200, -200), (-200, 200)]:
