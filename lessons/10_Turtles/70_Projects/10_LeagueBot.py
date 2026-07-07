@@ -31,11 +31,8 @@ t = turtle.Turtle()
 set_turtle_image(t, "leaguebot_bolt.gif")
 
 t.penup() 
-  # Prevent drawing when moving
+t.color("blue")  # Prevent drawing when moving
 t.speed(0)  # Set a moderate speed
 
-# Move the turtle to each corner of the screen in a square pattern
-for x, y in [(200, 200), (200, -200), (-200, -200), (-200, 200)]:
-    t.goto(x, y)
 
 turtle.exitonclick() 
