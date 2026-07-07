@@ -17,5 +17,5 @@ screen.bgcolor('white')
 
 tina = turtle.Turtle()
 tina.forward(50)
-turtle.exitonclick
+turtle.exitonclick()
 ... # Your Code Here
