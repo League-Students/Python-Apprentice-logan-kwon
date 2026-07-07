@@ -9,8 +9,8 @@ name: Crazy Spiral
 """
 
 ... # Copy code to make a turtle and set up the window
-
-t = turtle.Turtle()... # Create a turtle named t
+import turtle
+t = turtle.Turtle() # Create a turtle named t
 
 # 1) Complete make_a_shape() to make the turtle move in some pattern. 
 # For instance, you can make it go left 30 degrees, then forward 50 pixels, 
@@ -27,6 +27,7 @@ def make_a_shape(t):
 
 num_shapes = ...
 
-for i in range(...):
+for i in range(10,8):
     make_a_shape(t)
     t.right(360/num_shapes)
+turtle.exitonclick()
