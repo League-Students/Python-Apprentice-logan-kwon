@@ -2,13 +2,21 @@ import pygame
 import random
 import sys
 
-# 1. INITIALIZE WINDOW FIRST
+# 1. HARDWARE-SAFE WINDOW INITIALIZATION
 pygame.init()
+pygame.mixer.init() # Prevent audio sync freezes
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Uses combined Double Buffering flags to force your GPU to redraw frames cleanly
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
 pygame.display.set_caption("Space Invaders: Elite Edition")
 clock = pygame.time.Clock()
+
+# Force immediate canvas color sweep right on startup to clear buffer locks
+screen.fill((20, 20, 35))
+pygame.display.flip()
 
 # COLORS
 BLACK = (10, 10, 20)
@@ -20,41 +28,41 @@ BLUE = (0, 191, 255)
 PURPLE = (180, 50, 255)
 DARK_GRAY = (40, 40, 40)
 
-# 2. SAFE FONT LOADING (Uses Pygame's native internal font asset)
-font = pygame.font.Font(None, 28)
-large_font = pygame.font.Font(None, 74)
+# 2. INTERNAL RESILIENT FONT LOADING
+font = pygame.font.Font(None, 26)
+large_font = pygame.font.Font(None, 68)
 
-# GAME STATE VARIABLES
+# GAME VARIABLES
 score = 0
 lives = 3
 game_over = False
 
-# PLAYER PROPERTIES
+# PLAYER RECT
 player_width = 50
 player_height = 40
 player_x = SCREEN_WIDTH // 2 - player_width // 2
-player_y = SCREEN_HEIGHT - 70
+player_y = SCREEN_HEIGHT - 80
 player_speed = 6
 
-# SHIELD ABILITY PROPERTIES
+# SHIELD PROPERTIES
 shield_active = False
 shield_duration = 3000  
 shield_cooldown = 8000  
 last_shield_time = -8000  
 shield_end_time = 0
 
-# LASER CONTAINERS
+# CONTAINERS
 player_lasers = []
 enemy_lasers = []
+enemies = []
 
-# NORMAL ENEMY PROPERTIES
+# ALIEN WAVE PROPERTIES
 enemy_width = 44
 enemy_height = 32
 enemy_speed_x = 2
 enemy_speed_y = 20
 enemy_direction = 1
-enemies = []
-enemy_shoot_chance = 0.008  
+enemy_shoot_chance = 0.007  
 
 # BOSS PROPERTIES
 boss_active = False
@@ -69,31 +77,31 @@ boss_score_milestone = 400
 boss_shoot_cooldown = 1200  
 last_boss_shoot_time = 0
 
-# SPAWN NORMAL ENEMIES
+# WAVE SPAWNER
 def spawn_enemies():
     enemies.clear()
     for row in range(3):
         for col in range(9):
             x = 100 + col * 65
-            y = 70 + row * 50
+            y = 80 + row * 50
             enemies.append(pygame.Rect(x, y, enemy_width, enemy_height))
 
-# SPAWN BOSS
 def spawn_boss():
     global boss_active, boss_rect, boss_hp
     boss_active = True
     boss_hp = boss_max_hp
-    boss_rect = pygame.Rect(SCREEN_WIDTH // 2 - boss_width // 2, 60, boss_width, boss_height)
+    boss_rect = pygame.Rect(SCREEN_WIDTH // 2 - boss_width // 2, 80, boss_width, boss_height)
     enemies.clear()
     enemy_lasers.clear()
 
+# Initialize first board layout
 spawn_enemies()
 
 # 3. MAIN GAME LOOP
 while True:
     current_time = pygame.time.get_ticks()
 
-    # EVENT HANDLING
+    # CORE WINDOW TRACKING EVENTS
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -126,20 +134,20 @@ while True:
         shield_active = False
 
     if not game_over:
-        # PLAYER MOVEMENT
+        # MOVEMENT TRACKING
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and player_x > 0:
             player_x -= player_speed
         if keys[pygame.K_RIGHT] and player_x < SCREEN_WIDTH - player_width:
             player_x += player_speed
 
-        # MOVE PLAYER LASERS
+        # UPDATE PLAYER LASERS
         for laser in player_lasers[:]:
             laser.y -= 9
             if laser.y < 0:
                 player_lasers.remove(laser)
 
-        # MOVE ENEMY LASERS
+        # UPDATE ENEMY PROJECTILES
         for laser_data in enemy_lasers[:]:
             laser_rect = laser_data["rect"]
             laser_rect.x += laser_data["vx"]
@@ -149,7 +157,6 @@ while True:
                 if laser_data in enemy_lasers: enemy_lasers.remove(laser_data)
                 continue
 
-            # Player Hit Detection
             player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
             if laser_rect.colliderect(player_rect):
                 if laser_data in enemy_lasers: enemy_lasers.remove(laser_data)
@@ -158,7 +165,7 @@ while True:
                     if lives <= 0:
                         game_over = True
 
-        # BOSS GAMEPLAY LOGIC
+        # RUN BOSS FIGHT LOGIC
         if boss_active:
             boss_rect.x += boss_speed * boss_direction
             if boss_rect.right >= SCREEN_WIDTH or boss_rect.left <= 0:
@@ -188,7 +195,7 @@ while True:
             if boss_rect.bottom >= player_y:
                 game_over = True
 
-        # NORMAL ENEMY GAMEPLAY LOGIC
+        # RUN REGULAR ALIEN LOGIC
         else:
             move_down = False
             for enemy in enemies:
@@ -226,11 +233,11 @@ while True:
                     spawn_enemies()
                     enemy_speed_x += 0.4
 
-    # 4. DRAW GRAPHICS
+    # 4. RENDER PRESENTATION CANVAS
     screen.fill(BLACK)
 
     if not game_over:
-        # Draw Player Ship
+        # Draw Ship
         pygame.draw.polygon(screen, GREEN, [
             (player_x + player_width // 2, player_y), 
             (player_x, player_y + player_height), 
@@ -248,7 +255,7 @@ while True:
             color = RED if laser_data["is_boss"] else PURPLE
             pygame.draw.rect(screen, color, laser_data["rect"])
 
-        # Draw Aliens
+        # Draw Swarm
         for enemy in enemies:
             pygame.draw.rect(screen, PURPLE, (enemy.x + 8, enemy.y, 28, enemy.height), border_radius=4)
             pygame.draw.polygon(screen, BLUE, [(enemy.x, enemy.y + 10), (enemy.x + 8, enemy.y), (enemy.x + 8, enemy.y + 25)])
@@ -256,7 +263,7 @@ while True:
             pygame.draw.circle(screen, YELLOW, (enemy.x + 16, enemy.y + 12), 3)
             pygame.draw.circle(screen, YELLOW, (enemy.x + 28, enemy.y + 12), 3)
 
-        # Draw Boss
+        # Draw Boss Matrix
         if boss_active:
             bx, by = boss_rect.centerx, boss_rect.centery
             pygame.draw.circle(screen, YELLOW, (bx, by), 30)
@@ -270,13 +277,7 @@ while True:
             hp_width = int(max(0, 300 * (boss_hp / boss_max_hp)))
             pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
 
-        # DRAW STATS HUD
+        # DRAW SCREEN DISPLAY TEXTS
         score_txt = font.render(f"SCORE: {score}", True, WHITE)
         lives_txt = font.render(f"LIVES: {lives}", True, RED)
         screen.blit(score_txt, (15, 15))
-        screen.blit(lives_txt, (15, 45))
-
-        cooldown = max(0, shield_cooldown - (current_time - last_shield_time))
-        if shield_active:
-            sh_txt = font.render("SHIELD: UNSTOPPABLE", True, BLUE)
-        elif cooldown == 0:
