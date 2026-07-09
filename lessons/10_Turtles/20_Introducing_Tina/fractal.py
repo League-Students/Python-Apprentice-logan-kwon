@@ -25,13 +25,13 @@ score = 0
 lives = 3
 game_over = False
 font = pygame.font.SysFont("Arial", 22, bold=True)
-large_font = pygame.font.SysFont("Arial", 72, bold=True)
+large_font = pygame.font.SysFont("Arial", 64, bold=True)
 
 # PLAYER PROPERTIES
 player_width = 50
 player_height = 40
 player_x = SCREEN_WIDTH // 2 - player_width // 2
-player_y = SCREEN_HEIGHT - 60
+player_y = SCREEN_HEIGHT - 70
 player_speed = 6
 
 # SHIELD ABILITY PROPERTIES
@@ -43,7 +43,6 @@ shield_end_time = 0
 
 # LASER CONTAINERS
 player_lasers = []
-# Each enemy laser will be a dict: {"rect": pygame.Rect, "vx": float, "vy": float}
 enemy_lasers = []
 
 # NORMAL ENEMY PROPERTIES
@@ -53,7 +52,7 @@ enemy_speed_x = 2
 enemy_speed_y = 20
 enemy_direction = 1
 enemies = []
-enemy_shoot_chance = 0.005  
+enemy_shoot_chance = 0.008  
 
 # BOSS PROPERTIES
 boss_active = False
@@ -138,18 +137,17 @@ while True:
             if laser.y < 0:
                 player_lasers.remove(laser)
 
-        # MOVE ENEMY LASERS (Using dictionaries safely)
+        # MOVE ENEMY LASERS
         for laser_data in enemy_lasers[:]:
             laser_rect = laser_data["rect"]
             laser_rect.x += laser_data["vx"]
             laser_rect.y += laser_data["vy"]
             
-            # Check if laser goes off screen boundaries
             if laser_rect.y > SCREEN_HEIGHT or laser_rect.x < 0 or laser_rect.x > SCREEN_WIDTH:
                 if laser_data in enemy_lasers: enemy_lasers.remove(laser_data)
                 continue
 
-            # Player Hit Check
+            # Player Hit Detection
             player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
             if laser_rect.colliderect(player_rect):
                 if laser_data in enemy_lasers: enemy_lasers.remove(laser_data)
@@ -169,7 +167,7 @@ while True:
                 last_boss_shoot_time = current_time
                 bx = boss_rect.centerx
                 by = boss_rect.centery
-                angles = [-3, 0, 3] # Left diagonal, straight down, right diagonal velocities
+                angles = [-3, 0, 3] 
                 for vx_val in angles:
                     b_rect = pygame.Rect(bx - 4, by + 40, 8, 18)
                     enemy_lasers.append({"rect": b_rect, "vx": vx_val, "vy": 6, "is_boss": True})
@@ -186,6 +184,9 @@ while True:
                         boss_max_hp += 20
                         spawn_enemies()
                         break
+                        
+            if boss_rect.bottom >= player_y:
+                game_over = True
 
         # NORMAL ENEMY GAMEPLAY LOGIC
         else:
@@ -195,7 +196,6 @@ while True:
                 if enemy.right >= SCREEN_WIDTH or enemy.left <= 0:
                     move_down = True
                 
-                # Random shooting
                 if random.random() < enemy_shoot_chance:
                     el_rect = pygame.Rect(enemy.centerx - 3, enemy.bottom, 6, 14)
                     enemy_lasers.append({"rect": el_rect, "vx": 0, "vy": 5, "is_boss": False})
@@ -273,7 +273,9 @@ while True:
             
             # Boss Health UI Bar
             pygame.draw.rect(screen, DARK_GRAY, (SCREEN_WIDTH // 2 - 150, 15, 300, 18))
-            hp_width = int(300 * (boss_hp / boss_max_hp))
+            hp_width = int(max(0, 300 * (boss_hp / boss_max_hp)))
             pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
 
         # DRAW STATS HUD
+        score_txt = font.render(f"SCORE: {score}", True, WHITE)
+        lives_txt = font.render(f"LIVES: {lives}", True, RED)
