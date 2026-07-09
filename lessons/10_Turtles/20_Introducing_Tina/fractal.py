@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 
-# 1. INITIALIZE GAME AND WINDOW
+# 1. INITIALIZE WINDOW FIRST
 pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -20,12 +20,14 @@ BLUE = (0, 191, 255)
 PURPLE = (180, 50, 255)
 DARK_GRAY = (40, 40, 40)
 
-# 2. GAME VARIABLES
+# 2. SAFE FONT LOADING (Uses Pygame's native internal font asset)
+font = pygame.font.Font(None, 28)
+large_font = pygame.font.Font(None, 74)
+
+# GAME STATE VARIABLES
 score = 0
 lives = 3
 game_over = False
-font = pygame.font.SysFont("Arial", 22, bold=True)
-large_font = pygame.font.SysFont("Arial", 64, bold=True)
 
 # PLAYER PROPERTIES
 player_width = 50
@@ -162,7 +164,6 @@ while True:
             if boss_rect.right >= SCREEN_WIDTH or boss_rect.left <= 0:
                 boss_direction *= -1
 
-            # Boss Attacks
             if current_time - last_boss_shoot_time >= boss_shoot_cooldown:
                 last_boss_shoot_time = current_time
                 bx = boss_rect.centerx
@@ -172,7 +173,6 @@ while True:
                     b_rect = pygame.Rect(bx - 4, by + 40, 8, 18)
                     enemy_lasers.append({"rect": b_rect, "vx": vx_val, "vy": 6, "is_boss": True})
 
-            # Player Laser vs Boss HP
             for laser in player_lasers[:]:
                 if laser.colliderect(boss_rect):
                     player_lasers.remove(laser)
@@ -210,7 +210,6 @@ while True:
                         else:
                             game_over = True
 
-            # Player Laser vs Regular Enemy
             for laser in player_lasers[:]:
                 for enemy in enemies[:]:
                     if laser.colliderect(enemy):
@@ -219,7 +218,6 @@ while True:
                         score += 10
                         break
 
-            # Win Wave Logic
             if len(enemies) == 0:
                 if score >= boss_score_milestone:
                     spawn_boss()
@@ -240,20 +238,17 @@ while True:
         ])
         pygame.draw.rect(screen, BLUE, (player_x + 12, player_y + 15, 26, 12))  
         
-        # Shield Bubble Visual
         if shield_active:
             pygame.draw.circle(screen, BLUE, (player_x + player_width // 2, player_y + player_height // 2), 48, 3)
 
-        # Draw Player Lasers
         for laser in player_lasers:
             pygame.draw.rect(screen, GREEN, laser)
 
-        # Draw Enemy Lasers
         for laser_data in enemy_lasers:
             color = RED if laser_data["is_boss"] else PURPLE
             pygame.draw.rect(screen, color, laser_data["rect"])
 
-        # Draw Detailed Regular Alien Ships
+        # Draw Aliens
         for enemy in enemies:
             pygame.draw.rect(screen, PURPLE, (enemy.x + 8, enemy.y, 28, enemy.height), border_radius=4)
             pygame.draw.polygon(screen, BLUE, [(enemy.x, enemy.y + 10), (enemy.x + 8, enemy.y), (enemy.x + 8, enemy.y + 25)])
@@ -261,7 +256,7 @@ while True:
             pygame.draw.circle(screen, YELLOW, (enemy.x + 16, enemy.y + 12), 3)
             pygame.draw.circle(screen, YELLOW, (enemy.x + 28, enemy.y + 12), 3)
 
-        # Draw Unique Boss Shape: Mechanical Multi-Armed Ring
+        # Draw Boss
         if boss_active:
             bx, by = boss_rect.centerx, boss_rect.centery
             pygame.draw.circle(screen, YELLOW, (bx, by), 30)
@@ -271,7 +266,6 @@ while True:
             pygame.draw.rect(screen, DARK_GRAY, (boss_rect.x, boss_rect.bottom - 25, 25, 25))
             pygame.draw.rect(screen, DARK_GRAY, (boss_rect.right - 25, boss_rect.bottom - 25, 25, 25))
             
-            # Boss Health UI Bar
             pygame.draw.rect(screen, DARK_GRAY, (SCREEN_WIDTH // 2 - 150, 15, 300, 18))
             hp_width = int(max(0, 300 * (boss_hp / boss_max_hp)))
             pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
@@ -279,3 +273,10 @@ while True:
         # DRAW STATS HUD
         score_txt = font.render(f"SCORE: {score}", True, WHITE)
         lives_txt = font.render(f"LIVES: {lives}", True, RED)
+        screen.blit(score_txt, (15, 15))
+        screen.blit(lives_txt, (15, 45))
+
+        cooldown = max(0, shield_cooldown - (current_time - last_shield_time))
+        if shield_active:
+            sh_txt = font.render("SHIELD: UNSTOPPABLE", True, BLUE)
+        elif cooldown == 0:
