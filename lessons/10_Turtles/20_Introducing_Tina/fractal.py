@@ -1,7 +1,6 @@
 import pygame
 import random
 import sys
-import math
 
 # 1. INITIALIZE GAME AND WINDOW
 pygame.init()
@@ -44,6 +43,7 @@ shield_end_time = 0
 
 # LASER CONTAINERS
 player_lasers = []
+# Each enemy laser will be a dict: {"rect": pygame.Rect, "vx": float, "vy": float}
 enemy_lasers = []
 
 # NORMAL ENEMY PROPERTIES
@@ -53,7 +53,7 @@ enemy_speed_x = 2
 enemy_speed_y = 20
 enemy_direction = 1
 enemies = []
-enemy_shoot_chance = 0.005  # Chance per frame for EACH alien to shoot
+enemy_shoot_chance = 0.005  
 
 # BOSS PROPERTIES
 boss_active = False
@@ -65,7 +65,7 @@ boss_max_hp = 60
 boss_speed = 3
 boss_direction = 1
 boss_score_milestone = 400
-boss_shoot_cooldown = 1200  # Shoots every 1.2 seconds
+boss_shoot_cooldown = 1200  
 last_boss_shoot_time = 0
 
 # SPAWN NORMAL ENEMIES
@@ -100,7 +100,6 @@ while True:
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and not game_over:
-                # Fire Player Laser
                 p_laser = pygame.Rect(player_x + player_width // 2 - 3, player_y, 6, 15)
                 player_lasers.append(p_laser)
             
@@ -111,7 +110,6 @@ while True:
                     shield_end_time = current_time + shield_duration
             
             if event.key == pygame.K_r and game_over:
-                # Reset Everything
                 score = 0
                 lives = 3
                 game_over = False
@@ -123,7 +121,6 @@ while True:
                 boss_score_milestone = 400
                 spawn_enemies()
 
-    # SHIELD TIMER CHECK
     if shield_active and current_time >= shield_end_time:
         shield_active = False
 
@@ -141,20 +138,21 @@ while True:
             if laser.y < 0:
                 player_lasers.remove(laser)
 
-        # MOVE ENEMY LASERS
-        for laser in enemy_lasers[:]:
-            if hasattr(laser, 'vx'):
-                laser.x += laser.vx
-            laser.y += laser.vy if hasattr(laser, 'vy') else 5
+        # MOVE ENEMY LASERS (Using dictionaries safely)
+        for laser_data in enemy_lasers[:]:
+            laser_rect = laser_data["rect"]
+            laser_rect.x += laser_data["vx"]
+            laser_rect.y += laser_data["vy"]
             
-            if laser.y > SCREEN_HEIGHT or laser.x < 0 or laser.x > SCREEN_WIDTH:
-                if laser in enemy_lasers: enemy_lasers.remove(laser)
+            # Check if laser goes off screen boundaries
+            if laser_rect.y > SCREEN_HEIGHT or laser_rect.x < 0 or laser_rect.x > SCREEN_WIDTH:
+                if laser_data in enemy_lasers: enemy_lasers.remove(laser_data)
                 continue
 
             # Player Hit Check
             player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
-            if laser.colliderect(player_rect):
-                if laser in enemy_lasers: enemy_lasers.remove(laser)
+            if laser_rect.colliderect(player_rect):
+                if laser_data in enemy_lasers: enemy_lasers.remove(laser_data)
                 if not shield_active:
                     lives -= 1
                     if lives <= 0:
@@ -171,12 +169,10 @@ while True:
                 last_boss_shoot_time = current_time
                 bx = boss_rect.centerx
                 by = boss_rect.centery
-                angles = [-1.5, 0, 1.5]
-                for angle in angles:
-                    b_laser = pygame.Rect(bx - 4, by + 40, 8, 18)
-                    b_laser.vx = angle * 2
-                    b_laser.vy = 6
-                    enemy_lasers.append(b_laser)
+                angles = [-3, 0, 3] # Left diagonal, straight down, right diagonal velocities
+                for vx_val in angles:
+                    b_rect = pygame.Rect(bx - 4, by + 40, 8, 18)
+                    enemy_lasers.append({"rect": b_rect, "vx": vx_val, "vy": 6, "is_boss": True})
 
             # Player Laser vs Boss HP
             for laser in player_lasers[:]:
@@ -201,9 +197,8 @@ while True:
                 
                 # Random shooting
                 if random.random() < enemy_shoot_chance:
-                    el = pygame.Rect(enemy.centerx - 3, enemy.bottom, 6, 14)
-                    el.vy = 5
-                    enemy_lasers.append(el)
+                    el_rect = pygame.Rect(enemy.centerx - 3, enemy.bottom, 6, 14)
+                    enemy_lasers.append({"rect": el_rect, "vx": 0, "vy": 5, "is_boss": False})
 
             if move_down:
                 enemy_direction *= -1
@@ -237,13 +232,13 @@ while True:
     screen.fill(BLACK)
 
     if not game_over:
-        # Draw Upgraded Player Ship
+        # Draw Player Ship
         pygame.draw.polygon(screen, GREEN, [
             (player_x + player_width // 2, player_y), 
             (player_x, player_y + player_height), 
             (player_x + player_width, player_y + player_height)
         ])
-        pygame.draw.rect(screen, BLUE, (player_x + 12, player_y + 15, 26, 12))  # Cockpit Window
+        pygame.draw.rect(screen, BLUE, (player_x + 12, player_y + 15, 26, 12))  
         
         # Shield Bubble Visual
         if shield_active:
@@ -254,9 +249,9 @@ while True:
             pygame.draw.rect(screen, GREEN, laser)
 
         # Draw Enemy Lasers
-        for laser in enemy_lasers:
-            color = RED if hasattr(laser, 'vx') else PURPLE
-            pygame.draw.rect(screen, color, laser)
+        for laser_data in enemy_lasers:
+            color = RED if laser_data["is_boss"] else PURPLE
+            pygame.draw.rect(screen, color, laser_data["rect"])
 
         # Draw Detailed Regular Alien Ships
         for enemy in enemies:
@@ -282,4 +277,3 @@ while True:
             pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
 
         # DRAW STATS HUD
-        score_txt = font.render(f"SCORE: {score}", True, WHITE)
