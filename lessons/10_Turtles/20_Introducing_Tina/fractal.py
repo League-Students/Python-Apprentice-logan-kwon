@@ -2,21 +2,23 @@ import pygame
 import random
 import sys
 
-# 1. INITIALIZE WINDOW AND HARDWARE SAFELY
+# 1. INITIALIZE PYGAME CORES Safely
 pygame.init()
 
-# SAFE AUDIO INITIALIZATION: Skip audio if your computer has no sound device
+# Audio device bypass safety check
 try:
     pygame.mixer.init()
-except pygame.error:
-    print("Warning: No audio device detected. Running game in silent mode.")
+except Exception:
+    pass
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# Force double-buffered window to handle graphics drivers safely
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
+# Bypasses hardware driver blockades by dropping hardware acceleration flags
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Space Invaders: Elite Edition")
+
+# Force absolute baseline clock manager initialization
 clock = pygame.time.Clock()
 
 # COLORS
@@ -29,35 +31,35 @@ BLUE = (0, 191, 255)
 PURPLE = (180, 50, 255)
 DARK_GRAY = (40, 40, 40)
 
-# 2. INTERNAL RESILIENT FONT LOADING
+# Resilient internal fonts
 font = pygame.font.Font(None, 26)
 large_font = pygame.font.Font(None, 68)
 
-# GAME VARIABLES
+# GAME ENGINE STATE
 score = 0
 lives = 3
 game_over = False
 
-# PLAYER RECT
+# PLAYER DESIGN
 player_width = 50
 player_height = 40
 player_x = SCREEN_WIDTH // 2 - player_width // 2
 player_y = SCREEN_HEIGHT - 80
 player_speed = 6
 
-# SHIELD PROPERTIES
+# ENERGY SHIELD MECHANICS
 shield_active = False
 shield_duration = 3000  
 shield_cooldown = 8000  
 last_shield_time = -8000  
 shield_end_time = 0
 
-# CONTAINERS
+# ENTITY LISTS
 player_lasers = []
 enemy_lasers = []
 enemies = []
 
-# ALIEN WAVE PROPERTIES
+# WAVE ARCHITECTURE
 enemy_width = 44
 enemy_height = 32
 enemy_speed_x = 2
@@ -65,7 +67,7 @@ enemy_speed_y = 20
 enemy_direction = 1
 enemy_shoot_chance = 0.007  
 
-# BOSS PROPERTIES
+# REGULAR BOSS SPECS
 boss_active = False
 boss_width = 140
 boss_height = 140
@@ -78,7 +80,6 @@ boss_score_milestone = 400
 boss_shoot_cooldown = 1200  
 last_boss_shoot_time = 0
 
-# WAVE SPAWNER
 def spawn_enemies():
     enemies.clear()
     for row in range(3):
@@ -97,10 +98,13 @@ def spawn_boss():
 
 spawn_enemies()
 
-# 3. MAIN GAME LOOP
+# 3. ROBUST GAME LOOP
 while True:
+    # CRITICAL: Force the CPU to sleep and sync with monitor frame cycles immediately
+    clock.tick(60)
     current_time = pygame.time.get_ticks()
 
+    # SYSTEM EVENT CAPTURE
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -133,20 +137,19 @@ while True:
         shield_active = False
 
     if not game_over:
-        # MOVEMENT TRACKING
+        # ASYNC INPUT CONTROLS
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and player_x > 0:
             player_x -= player_speed
         if keys[pygame.K_RIGHT] and player_x < SCREEN_WIDTH - player_width:
             player_x += player_speed
 
-        # UPDATE PLAYER LASERS
+        # AMMUNITION TRACKING
         for laser in player_lasers[:]:
             laser.y -= 9
             if laser.y < 0:
                 player_lasers.remove(laser)
 
-        # UPDATE ENEMY PROJECTILES
         for laser_data in enemy_lasers[:]:
             laser_rect = laser_data["rect"]
             laser_rect.x += laser_data["vx"]
@@ -164,7 +167,7 @@ while True:
                     if lives <= 0:
                         game_over = True
 
-        # RUN BOSS FIGHT LOGIC
+        # ENDBOSS EVENT CALCULATIONS
         if boss_active:
             boss_rect.x += boss_speed * boss_direction
             if boss_rect.right >= SCREEN_WIDTH or boss_rect.left <= 0:
@@ -194,7 +197,7 @@ while True:
             if boss_rect.bottom >= player_y:
                 game_over = True
 
-        # RUN REGULAR ALIEN LOGIC
+        # ENEMY SWARM RUNTIME LOOP
         else:
             move_down = False
             for enemy in enemies:
@@ -232,11 +235,11 @@ while True:
                     spawn_enemies()
                     enemy_speed_x += 0.4
 
-    # 4. RENDER DRAW CALLS
+    # 4. RENDER DRAW LAYER PIPELINE
     screen.fill(BLACK)
 
     if not game_over:
-        # Draw Ship
+        # Build Combat Jet
         pygame.draw.polygon(screen, GREEN, [
             (player_x + player_width // 2, player_y), 
             (player_x, player_y + player_height), 
@@ -254,7 +257,7 @@ while True:
             color = RED if laser_data["is_boss"] else PURPLE
             pygame.draw.rect(screen, color, laser_data["rect"])
 
-        # Draw Enemies
+        # Build Swarm Vessels
         for enemy in enemies:
             pygame.draw.rect(screen, PURPLE, (enemy.x + 8, enemy.y, 28, enemy.height), border_radius=4)
             pygame.draw.polygon(screen, BLUE, [(enemy.x, enemy.y + 10), (enemy.x + 8, enemy.y), (enemy.x + 8, enemy.y + 25)])
@@ -262,7 +265,7 @@ while True:
             pygame.draw.circle(screen, YELLOW, (enemy.x + 16, enemy.y + 12), 3)
             pygame.draw.circle(screen, YELLOW, (enemy.x + 28, enemy.y + 12), 3)
 
-        # Draw Boss
+        # Build Mechanical Boss Ring
         if boss_active:
             bx, by = boss_rect.centerx, boss_rect.centery
             pygame.draw.circle(screen, YELLOW, (bx, by), 30)
@@ -276,8 +279,7 @@ while True:
             hp_width = int(max(0, 300 * (boss_hp / boss_max_hp)))
             pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
 
-        # DRAW STATS HUD
+        # HEADS UP DISPLAY (HUD) TEXTS
         score_txt = font.render(f"SCORE: {score}", True, WHITE)
         lives_txt = font.render(f"LIVES: {lives}", True, RED)
         screen.blit(score_txt, (15, 15))
-        screen.blit(lives_txt, (15, 45))
