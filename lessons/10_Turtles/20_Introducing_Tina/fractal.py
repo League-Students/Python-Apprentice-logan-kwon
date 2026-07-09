@@ -2,21 +2,22 @@ import pygame
 import random
 import sys
 
-# 1. HARDWARE-SAFE WINDOW INITIALIZATION
+# 1. INITIALIZE WINDOW AND HARDWARE SAFELY
 pygame.init()
-pygame.mixer.init() # Prevent audio sync freezes
+
+# SAFE AUDIO INITIALIZATION: Skip audio if your computer has no sound device
+try:
+    pygame.mixer.init()
+except pygame.error:
+    print("Warning: No audio device detected. Running game in silent mode.")
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# Uses combined Double Buffering flags to force your GPU to redraw frames cleanly
+# Force double-buffered window to handle graphics drivers safely
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
 pygame.display.set_caption("Space Invaders: Elite Edition")
 clock = pygame.time.Clock()
-
-# Force immediate canvas color sweep right on startup to clear buffer locks
-screen.fill((20, 20, 35))
-pygame.display.flip()
 
 # COLORS
 BLACK = (10, 10, 20)
@@ -94,14 +95,12 @@ def spawn_boss():
     enemies.clear()
     enemy_lasers.clear()
 
-# Initialize first board layout
 spawn_enemies()
 
 # 3. MAIN GAME LOOP
 while True:
     current_time = pygame.time.get_ticks()
 
-    # CORE WINDOW TRACKING EVENTS
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -233,7 +232,7 @@ while True:
                     spawn_enemies()
                     enemy_speed_x += 0.4
 
-    # 4. RENDER PRESENTATION CANVAS
+    # 4. RENDER DRAW CALLS
     screen.fill(BLACK)
 
     if not game_over:
@@ -255,7 +254,7 @@ while True:
             color = RED if laser_data["is_boss"] else PURPLE
             pygame.draw.rect(screen, color, laser_data["rect"])
 
-        # Draw Swarm
+        # Draw Enemies
         for enemy in enemies:
             pygame.draw.rect(screen, PURPLE, (enemy.x + 8, enemy.y, 28, enemy.height), border_radius=4)
             pygame.draw.polygon(screen, BLUE, [(enemy.x, enemy.y + 10), (enemy.x + 8, enemy.y), (enemy.x + 8, enemy.y + 25)])
@@ -263,7 +262,7 @@ while True:
             pygame.draw.circle(screen, YELLOW, (enemy.x + 16, enemy.y + 12), 3)
             pygame.draw.circle(screen, YELLOW, (enemy.x + 28, enemy.y + 12), 3)
 
-        # Draw Boss Matrix
+        # Draw Boss
         if boss_active:
             bx, by = boss_rect.centerx, boss_rect.centery
             pygame.draw.circle(screen, YELLOW, (bx, by), 30)
@@ -277,7 +276,8 @@ while True:
             hp_width = int(max(0, 300 * (boss_hp / boss_max_hp)))
             pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
 
-        # DRAW SCREEN DISPLAY TEXTS
+        # DRAW STATS HUD
         score_txt = font.render(f"SCORE: {score}", True, WHITE)
         lives_txt = font.render(f"LIVES: {lives}", True, RED)
         screen.blit(score_txt, (15, 15))
+        screen.blit(lives_txt, (15, 45))
