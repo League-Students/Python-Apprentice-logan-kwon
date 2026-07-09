@@ -141,9 +141,8 @@ while True:
             if laser.y < 0:
                 player_lasers.remove(laser)
 
-        # MOVE ENEMY LASERS (Both Boss and Normal lasers use custom movements mapped below)
+        # MOVE ENEMY LASERS
         for laser in enemy_lasers[:]:
-            # Some boss lasers have horizontal velocities packed into rect storage hacks
             if hasattr(laser, 'vx'):
                 laser.x += laser.vx
             laser.y += laser.vy if hasattr(laser, 'vy') else 5
@@ -155,7 +154,7 @@ while True:
             # Player Hit Check
             player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
             if laser.colliderect(player_rect):
-                enemy_lasers.remove(laser)
+                if laser in enemy_lasers: enemy_lasers.remove(laser)
                 if not shield_active:
                     lives -= 1
                     if lives <= 0:
@@ -172,7 +171,6 @@ while True:
                 last_boss_shoot_time = current_time
                 bx = boss_rect.centerx
                 by = boss_rect.centery
-                # Fire 3 lasers in spreading directions
                 angles = [-1.5, 0, 1.5]
                 for angle in angles:
                     b_laser = pygame.Rect(bx - 4, by + 40, 8, 18)
@@ -201,7 +199,7 @@ while True:
                 if enemy.right >= SCREEN_WIDTH or enemy.left <= 0:
                     move_down = True
                 
-                # Random enemy shooting logic
+                # Random shooting
                 if random.random() < enemy_shoot_chance:
                     el = pygame.Rect(enemy.centerx - 3, enemy.bottom, 6, 14)
                     el.vy = 5
@@ -262,23 +260,26 @@ while True:
 
         # Draw Detailed Regular Alien Ships
         for enemy in enemies:
-            # Main Core Box
             pygame.draw.rect(screen, PURPLE, (enemy.x + 8, enemy.y, 28, enemy.height), border_radius=4)
-            # Side Gun Wings
             pygame.draw.polygon(screen, BLUE, [(enemy.x, enemy.y + 10), (enemy.x + 8, enemy.y), (enemy.x + 8, enemy.y + 25)])
             pygame.draw.polygon(screen, BLUE, [(enemy.right, enemy.y + 10), (enemy.right - 8, enemy.y), (enemy.right - 8, enemy.y + 25)])
-            # Glowing Alien Eyes
             pygame.draw.circle(screen, YELLOW, (enemy.x + 16, enemy.y + 12), 3)
             pygame.draw.circle(screen, YELLOW, (enemy.x + 28, enemy.y + 12), 3)
 
         # Draw Unique Boss Shape: Mechanical Multi-Armed Ring
         if boss_active:
             bx, by = boss_rect.centerx, boss_rect.centery
-            # Draw Core Energy Sphere
             pygame.draw.circle(screen, YELLOW, (bx, by), 30)
-            # Draw Heavy Outer Armor Ring
             pygame.draw.circle(screen, RED, (bx, by), 55, 12)
-            # Draw 4 Extending Gun Arms (Top-Left, Top-Right, Bottom-Left, Bottom-Right)
             pygame.draw.rect(screen, DARK_GRAY, (boss_rect.x, boss_rect.y, 25, 25))
             pygame.draw.rect(screen, DARK_GRAY, (boss_rect.right - 25, boss_rect.y, 25, 25))
             pygame.draw.rect(screen, DARK_GRAY, (boss_rect.x, boss_rect.bottom - 25, 25, 25))
+            pygame.draw.rect(screen, DARK_GRAY, (boss_rect.right - 25, boss_rect.bottom - 25, 25, 25))
+            
+            # Boss Health UI Bar
+            pygame.draw.rect(screen, DARK_GRAY, (SCREEN_WIDTH // 2 - 150, 15, 300, 18))
+            hp_width = int(300 * (boss_hp / boss_max_hp))
+            pygame.draw.rect(screen, RED, (SCREEN_WIDTH // 2 - 150, 15, hp_width, 18))
+
+        # DRAW STATS HUD
+        score_txt = font.render(f"SCORE: {score}", True, WHITE)
