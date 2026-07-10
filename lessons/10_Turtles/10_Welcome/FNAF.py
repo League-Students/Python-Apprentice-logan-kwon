@@ -62,7 +62,7 @@ def exit_cam():
     screen.bgcolor("yellow")
     show_animatronics()
 def scare_tina():
-    g
+    global 
 exit_cam()
 
 screen.listen()
