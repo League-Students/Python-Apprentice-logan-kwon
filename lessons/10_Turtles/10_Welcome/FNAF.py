@@ -24,7 +24,7 @@ cam_colors = ["white", "blue", "red", "gray", "green"]
 
 def show_animatronics():
     global cam_num
-    if(cam_num == tina_path[tina_progress]):
+    if(cam_num == tina_path[tina_progress]-1):
         tina.showturtle()
     else:
         tina.hideturtle()
@@ -64,7 +64,7 @@ def exit_cam():
 def scare_tina():
     global tina_progress
     global cam_num
-    if tina_progress == len(tina_path) and cam_num == 0
+    if tina_progress == len(tina_path)-1 and cam_num == 0:
         tina_progress = 0
         print("AAAAAAH")
 exit_cam()
