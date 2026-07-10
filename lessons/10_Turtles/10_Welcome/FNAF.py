@@ -8,7 +8,7 @@ screen.setup(500,500)
 cam_colors = ["red", "black", "green", "white", "blue"]
 
 def open_cam_1():
-    print("cam 1 open11")
+    print("CAM 1 OPENED")
 
 
 
