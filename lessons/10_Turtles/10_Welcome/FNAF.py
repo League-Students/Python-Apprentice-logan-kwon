@@ -62,7 +62,11 @@ def exit_cam():
     screen.bgcolor("yellow")
     show_animatronics()
 def scare_tina():
-    global 
+    global tina_progress
+    global cam_num
+    if tina_progress == len(tina_path) and cam_num == 0
+        tina_progress = 0
+        print("AAAAAAH")
 exit_cam()
 
 screen.listen()
