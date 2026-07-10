@@ -15,7 +15,7 @@ def move_tina():
     if tina_progress == len(tina_path):
         print("GAME OVER")
     else:
-        tina_progress += 1
+            tina_progress += 1
     show_animatronics()
     screen.ontimer(move_tina,2000)
     
