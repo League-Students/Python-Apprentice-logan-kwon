@@ -30,4 +30,5 @@ screen.onkey(open_cam_2, "2")
 screen.onkey(open_cam_3, "3")
 screen.onkey(open_cam_4, "4")
 screen.onkey(open_cam_5, "5")
+
 turtle.exitonclick()
