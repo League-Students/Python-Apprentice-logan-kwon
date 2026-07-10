@@ -1,4 +1,5 @@
 import turtle
+import time
 
 tina = turtle.Turtle()
 tina.shape("turtle")
