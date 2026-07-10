@@ -10,6 +10,9 @@ screen.setup(600,600)
 
 cam_colors = ["white", "blue", "red", "black", "green"]
 
+def 
+
+
 def open_cam_1():
     print("CAM 1 OPENED")
     screen.bgcolor(cam_colors[0])
@@ -28,6 +31,10 @@ def open_cam_5():
 def exit_cam():
     print("CAM EXITED")
     screen.bgcolor("yellow")
+
+
+
+
 screen.listen()
 screen.onkey(open_cam_1, "1")
 screen.onkey(open_cam_2, "2")
