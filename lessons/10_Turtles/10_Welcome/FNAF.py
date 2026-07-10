@@ -24,12 +24,12 @@ def open_cam_5():
     screen.bgcolor(cam_colors[4])
 def exit_cam():
     print("CAM EXITED")
-    screen.bgcolor
+    screen.bgcolor("yellow")
 screen.listen()
 screen.onkey(open_cam_1, "1")
 screen.onkey(open_cam_2, "2")
 screen.onkey(open_cam_3, "3")
 screen.onkey(open_cam_4, "4")
 screen.onkey(open_cam_5, "5")
-
+screen,onkey(exit_cam, "0")
 turtle.exitonclick()
