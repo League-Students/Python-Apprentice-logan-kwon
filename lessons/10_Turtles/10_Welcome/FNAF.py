@@ -6,6 +6,7 @@ tina.shape("turtle")
 tina_path = [1,2,4,5]
 tina_progress = 0
 cam_num = 0
+
 screen = turtle.Screen()
 screen.setup(600,600)
 
@@ -34,25 +35,25 @@ def open_cam_1():
     show_animatronics(1)
 def open_cam_2():
     global cam_num
-    cam_num = 1
+    cam_num = 2
     print("CAM 2 OPENED")
     screen.bgcolor(cam_colors[1])
     show_animatronics(2)
 def open_cam_3():
     global cam_num
-    cam_num = 1
+    cam_num = 3
     print("CAM 3 OPENED")
     screen.bgcolor(cam_colors[2])
     show_animatronics(3)
 def open_cam_4():
     global cam_num
-    cam_num = 1
+    cam_num = 4
     print("CAM 4 OPENED")
     screen.bgcolor(cam_colors[3])
     show_animatronics(4)
 def open_cam_5():
     global cam_num
-    cam_num = 1
+    cam_num = 5
     print("CAM 5 OPENED")
     screen.bgcolor(cam_colors[4])
     show_animatronics(5)
