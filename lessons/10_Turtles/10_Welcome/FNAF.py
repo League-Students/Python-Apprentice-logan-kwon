@@ -12,6 +12,7 @@ screen.setup(600,600)
 def move_tina():
     global tina_progress
     tina_progress += 1
+    show_animatronics
     screen.ontimer(move_tina,2000)
     
 
@@ -26,10 +27,13 @@ def show_animatronics():
 
 
 def open_cam_1():
+    global cam_num
     print("CAM 1 OPENED")
     screen.bgcolor(cam_colors[0])
     show_animatronics(1)
 def open_cam_2():
+    global cam_num
+    cam_num 
     print("CAM 2 OPENED")
     screen.bgcolor(cam_colors[1])
     show_animatronics(2)
