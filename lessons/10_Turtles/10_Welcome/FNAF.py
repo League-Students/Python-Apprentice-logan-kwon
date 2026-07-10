@@ -32,35 +32,35 @@ def open_cam_1():
     cam_num = 1
     print("CAM 1 OPENED")
     screen.bgcolor(cam_colors[0])
-    show_animatronics(1)
+    show_animatronics()
 def open_cam_2():
     global cam_num
     cam_num = 2
     print("CAM 2 OPENED")
     screen.bgcolor(cam_colors[1])
-    show_animatronics(2)
+    show_animatronics()
 def open_cam_3():
     global cam_num
     cam_num = 3
     print("CAM 3 OPENED")
     screen.bgcolor(cam_colors[2])
-    show_animatronics(3)
+    show_animatronics()
 def open_cam_4():
     global cam_num
     cam_num = 4
     print("CAM 4 OPENED")
     screen.bgcolor(cam_colors[3])
-    show_animatronics(4)
+    show_animatronics()
 def open_cam_5():
     global cam_num
     cam_num = 5
     print("CAM 5 OPENED")
     screen.bgcolor(cam_colors[4])
-    show_animatronics(5)
+    show_animatronics()
 def exit_cam():
     print("CAM EXITED")
     screen.bgcolor("yellow")
-    show_animatronics(6)
+    show_animatronics()
 
 exit_cam()
 
