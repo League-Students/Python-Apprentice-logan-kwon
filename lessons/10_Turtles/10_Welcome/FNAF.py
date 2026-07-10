@@ -13,7 +13,7 @@ screen.setup(600,600)
 def move_tina():
     global tina_progress
     tina_progress += 1
-    show_animatronics
+    show_animatronics()
     screen.ontimer(move_tina,2000)
     
 
