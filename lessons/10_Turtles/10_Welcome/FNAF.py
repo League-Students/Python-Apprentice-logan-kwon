@@ -1,35 +1,9 @@
 import turtle
 
-tina=turtle.Turtle()
+tina = turtle.Turtle()
 
 screen = turtle.Screen()
-screen
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+screen.setup(500,500)
 
 
 
