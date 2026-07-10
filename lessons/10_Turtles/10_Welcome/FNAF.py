@@ -61,7 +61,8 @@ def exit_cam():
     print("CAM EXITED")
     screen.bgcolor("yellow")
     show_animatronics()
-
+def scare_tina():
+    g
 exit_cam()
 
 screen.listen()
@@ -71,7 +72,7 @@ screen.onkey(open_cam_3, "3")
 screen.onkey(open_cam_4, "4")
 screen.onkey(open_cam_5, "5")
 screen.onkey(exit_cam, "0")
-
+screen.onkey(scare_tina, "space")
 screen.ontimer(move_tina, 2000)
 
 turtle.exitonclick()
