@@ -11,6 +11,7 @@ screen.setup(600,600)
 
 def move_tina():
     tina_progress += 1
+    screen.ontimer(move_tina,2)
 
 cam_colors = ["white", "blue", "red", "gray", "green"]
 
